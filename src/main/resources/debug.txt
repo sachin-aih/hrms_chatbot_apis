@@ -1,0 +1,1 @@
+https://nexa1.openai.azure.com/, 779f725ecf874f9395c10f8377ee80c8, gpt-4o, 2024-02-15-preview
