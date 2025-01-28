@@ -5,12 +5,14 @@ import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.demoapis.models.ChatHistory;
 import com.demoapis.models.EmployeeData;
 import com.demoapis.repositories.ChatHistoryRepository;
 import com.demoapis.repositories.EmployeeDataRepository;
 import com.demoapis.requestDtos.ChatBotRequestDto;
+import com.demoapis.responseDtos.ChatHistoryResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -35,7 +37,6 @@ public class ChatBotServices{
 	
  // hr-policies 
  public Object chatBotResponse(ChatBotRequestDto chatRequest){
-	 
 		try{
 			
 			String employeeId = chatRequest.getUserIdOrEmployeeId();
@@ -55,7 +56,7 @@ public class ChatBotServices{
 		 }
 	ProcessBuilder processBuilder = new ProcessBuilder(
 		    "C://Users/sachi/hrms/myenv/Scripts/python.exe",
-		    "D:\\demo_apis\\demohrms_apis\\src\\main\\resources\\main.py",
+		    "D:\\demo_apis\\hrms_chatbot_apis\\src\\main\\resources\\main.py",
 		    "--employee_id", employeeId,
 		    "--query", prompt
 		);
@@ -88,7 +89,7 @@ public class ChatBotServices{
          }
 
          // Path to the generated JSON file
-         File jsonFile = new File("D://demo_apis/demohrms_apis/response.json");
+         File jsonFile = new File("D://demo_apis/hrms_chatbot_apis/response.json");
 
          // Check if the file exists
          if (!jsonFile.exists()) {
@@ -112,6 +113,31 @@ public class ChatBotServices{
     	
          throw new RuntimeException("Error executing Python script: " + e.getMessage(), e);
      }
+ }
+ 
+ public ChatHistoryResponse getChatHistoryOfEmployee(String employeeId){
+	 EmployeeData employee = employeeRepo.findByemployeeID(employeeId);
+	 
+	 if(employee == null || employeeId.isEmpty()) {
+		 ChatHistoryResponse response = new ChatHistoryResponse();
+		 response.setResponseCode(HttpStatus.NOT_FOUND);
+		 response.setMessage("Employee Not Found for this Id !");
+		 return response;
+	 }
+	 List<ChatHistory> chatHistory = chatRepo.findByemployeeId(employeeId);
+	 if(chatHistory.isEmpty()) {
+		 ChatHistoryResponse response = new ChatHistoryResponse();
+		 response.setResponseCode(HttpStatus.NOT_FOUND);
+		 response.setMessage("No History Found !");
+		 return response; 
+	 }
+	 ChatHistoryResponse response = new ChatHistoryResponse();
+	 response.setResponseCode(HttpStatus.OK);
+	 response.setMessage("successfully got your history");
+	 response.setChatHistory(chatHistory);
+	 
+	 return response;
+	 
  }
 
 

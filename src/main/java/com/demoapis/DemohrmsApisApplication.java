@@ -1,5 +1,4 @@
 package com.demoapis;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
@@ -38,7 +37,7 @@ public class DemohrmsApisApplication implements CommandLineRunner{
      
      ProcessBuilder processBuilder = new ProcessBuilder(
     		    "C://Users/sachi/hrms/myenv/Scripts/python.exe", 
-    		    "D://demo_apis/demohrms_apis/src/main/resources/demo.py"
+    		    "D://demo_apis/hrms_chatbot_apis/src/main/resources/demo.py"
     		);
     Process process = processBuilder.start();
     BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));

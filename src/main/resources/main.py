@@ -54,22 +54,27 @@ def load_pdf_in_chunks(file_name, chunk_size=1000, overlap_size=20):
     except Exception as e:
         print(f"An error occurred: {e}")
         return []
+        
+root= os.getcwd()
 # Initialize the vector store
 vectorstore_ = DeepLakeVectorStore(dataset_path='deeplake_db', overwrite=False)
-# Load the PDF in chunks
-chunks = load_pdf_in_chunks(r"D:\demo_apis\demohrms_apis\src\main\resources\HR-Policies-Manuals.pdf")
-# Create a list of TextNode objects
-text_nodes = [
-    TextNode(
-        text=chunk,
-        embedding=embedding_model.get_text_embedding(chunk),
-    )
-    for chunk in chunks
-]
-# Add the text nodes to the vector store
-added_nodes = vectorstore_.add(
-    nodes=text_nodes
-)
+
+if not os.path.exists(os.path.join(root, "deeplake_db")):
+	# Load the PDF in chunks
+	
+	chunks = load_pdf_in_chunks(r"D:\demo_apis\hrms_chatbot_apis\src\main\resources\HR-Policies-Manuals.pdf")
+	# Create a list of TextNode objects
+	text_nodes = [
+	    TextNode(
+	        text=chunk,
+	        embedding=embedding_model.get_text_embedding(chunk),
+	    )
+	    for chunk in chunks
+	]
+	# Add the text nodes to the vector store
+	added_nodes = vectorstore_.add(
+	    nodes=text_nodes
+	)
 # Function to fetch data from MongoDB
 def retry(max_retries=3, delay=1, fallback=None):
     def decorator_retry(func):
